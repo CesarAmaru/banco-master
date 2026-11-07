@@ -59,7 +59,7 @@ public class ConexaoFactory {
         return props;
     }
     
-    public static Connection abrirBanco() throws SQLException{
+    public static Connection getConnection() throws SQLException{
         Properties props = carregarPropriedades();
         String url = props.getProperty("db.url");
         String usuario = props.getProperty("db.user");

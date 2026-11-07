@@ -4,6 +4,8 @@
  */
 package br.com.entidade;
 
+import java.time.LocalDate;
+
 /**
  * Representa o titular das contas.
  *
@@ -27,5 +29,81 @@ package br.com.entidade;
  * 
  */
 public class Cliente {
-    // TODO: implementar conforme descrito acima.
+    private Integer id;
+    private String nome;
+    private String cpf;
+    private String senha_hash;
+    private LocalDate data_nascimento;
+    private Integer tentativas_login;
+    private Boolean bloaqueado;
+    
+    public Cliente(){};
+
+    public Cliente(Integer id, String nome, String cpf, String senha_hash, LocalDate data_nascimento, Integer tentativas_login, Boolean bloaqueado) {
+        this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.senha_hash = senha_hash;
+        this.data_nascimento = data_nascimento;
+        this.tentativas_login = tentativas_login;
+        this.bloaqueado = bloaqueado;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getSenha_hash() {
+        return senha_hash;
+    }
+
+    public void setSenha_hash(String senha_hash) {
+        this.senha_hash = senha_hash;
+    }
+
+    public LocalDate getData_nascimento() {
+        return data_nascimento;
+    }
+
+    public void setData_nascimento(LocalDate data_nascimento) {
+        this.data_nascimento = data_nascimento;
+    }
+
+    public Integer getTentativas_login() {
+        return tentativas_login;
+    }
+
+    public void setTentativas_login(Integer tentativas_login) {
+        this.tentativas_login = tentativas_login;
+    }
+
+    public boolean getBloaqueado() {
+        return bloaqueado;
+    }
+
+    public void setBloaqueado(boolean bloaqueado) {
+        this.bloaqueado = bloaqueado;
+    }
+    
+    
 }
