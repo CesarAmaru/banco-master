@@ -4,6 +4,15 @@
  */
 package br.com.visao;
 
+import br.com.controle.ClienteControle;
+import br.com.entidade.Cliente;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  * Formulário de cadastro de novo cliente.
  *
@@ -11,23 +20,63 @@ package br.com.visao;
  * <p>
  * <b>O que esta classe deve fazer:</b>
  * <ul>
- *   <li>Componentes: nome, CPF, data de nascimento, senha e confirmação de senha; botões "Cadastrar" e "Voltar".</li>
- *   <li>"Cadastrar": chama {@code ClienteControle.cadastrar} e mostra sucesso ou erro; depois volta para a {@code TelaLogin}.</li>
+ * <li>Componentes: nome, CPF, data de nascimento, senha e confirmação de senha;
+ * botões "Cadastrar" e "Voltar".</li>
+ * <li>"Cadastrar": chama {@code ClienteControle.cadastrar} e mostra sucesso ou
+ * erro; depois volta para a {@code TelaLogin}.</li>
  * </ul>
  * <b>Atenção:</b>
  * <ul>
- *   <li>NetBeans: arraste os componentes pelo modo Design. NUNCA edite o bloco 'Generated Code'; escreva os eventos (clique dos botões) no código fora dele.</li>
+ * <li>NetBeans: arraste os componentes pelo modo Design. NUNCA edite o bloco
+ * 'Generated Code'; escreva os eventos (clique dos botões) no código fora
+ * dele.</li>
  * </ul>
  *
- * 
+ *
  */
 public class TelaCadastroCliente extends javax.swing.JFrame {
+
+    private final ClienteControle clienteControle;
+    private Integer idClienteSelecionado = null;
+    private Boolean bloqCLienteSelecionado = null;
+    private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**
      * Creates new form TelaCadastroCliente
      */
     public TelaCadastroCliente() {
         initComponents();
+        this.clienteControle = new ClienteControle();
+        setLocationRelativeTo(null);
+        atualizarTabela();
+    }
+
+    private void atualizarTabela() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) jTableClientes.getModel();
+            model.setRowCount(0);
+
+            List<Cliente> listaC = clienteControle.listarTodos();
+            for (Cliente c : listaC) {
+                model.addRow(new Object[]{
+                    c.getId(),
+                    c.getNome(),
+                    c.getCpf(),
+                    c.getData_nascimento() != null ? c.getData_nascimento().format(formatador) : "",
+                    c.getBloaqueado(),});
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro ao carregar Tabela", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limparCampos() {
+        jTnome.setText("");
+        jTcpf.setText("");
+        jTsenha.setText("");
+        jFormattedData.setText("dd/mm/yyyy");
+        idClienteSelecionado = null;
+        bloqCLienteSelecionado = null;
     }
 
     /**
@@ -39,21 +88,320 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jTnome = new javax.swing.JTextField();
+        jTcpf = new javax.swing.JTextField();
+        jTsenha = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableClientes = new javax.swing.JTable();
+        jBadicionar = new javax.swing.JButton();
+        jBatualizar = new javax.swing.JButton();
+        jBexcluir = new javax.swing.JButton();
+        jBlimpar = new javax.swing.JButton();
+        jBvoltar = new javax.swing.JButton();
+        jFormattedData = new javax.swing.JFormattedTextField();
+        try {
+            jFormattedData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setText("Nome");
+
+        jLabel2.setText("CPF");
+
+        jLabel3.setText("Senha");
+
+        jLabel4.setText("Data de Nascimento");
+
+        jTnome.setBackground(new java.awt.Color(204, 204, 204));
+
+        jTcpf.setBackground(new java.awt.Color(204, 204, 204));
+
+        jTsenha.setBackground(new java.awt.Color(204, 204, 204));
+        jTsenha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTsenhaActionPerformed(evt);
+            }
+        });
+
+        jTableClientes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nome", "CPF", "Data de Nascimento", "Bloqueado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableClientesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableClientes);
+        if (jTableClientes.getColumnModel().getColumnCount() > 0) {
+            jTableClientes.getColumnModel().getColumn(0).setResizable(false);
+            jTableClientes.getColumnModel().getColumn(1).setResizable(false);
+            jTableClientes.getColumnModel().getColumn(2).setResizable(false);
+            jTableClientes.getColumnModel().getColumn(3).setResizable(false);
+            jTableClientes.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        jBadicionar.setText("Adicionar");
+        jBadicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBadicionarActionPerformed(evt);
+            }
+        });
+
+        jBatualizar.setText("Atualizar");
+        jBatualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBatualizarActionPerformed(evt);
+            }
+        });
+
+        jBexcluir.setText("Excluir");
+        jBexcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBexcluirActionPerformed(evt);
+            }
+        });
+
+        jBlimpar.setText("Limpar");
+        jBlimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBlimparActionPerformed(evt);
+            }
+        });
+
+        jBvoltar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/voltar.png"))); // NOI18N
+        jBvoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBvoltarActionPerformed(evt);
+            }
+        });
+
+        jFormattedData.setBackground(new java.awt.Color(204, 204, 204));
+        jFormattedData.setText("dd/mm/yyyy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jBadicionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jBatualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jBexcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jTcpf, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTsenha, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(86, 86, 86)
+                                .addComponent(jBlimpar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jFormattedData, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(51, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTnome, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jBvoltar)
+                        .addGap(39, 39, 39))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTnome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jBvoltar)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jTsenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jBlimpar)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jFormattedData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jBadicionar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBatualizar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jBexcluir)
+                        .addGap(183, 183, 183))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTsenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTsenhaActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jTsenhaActionPerformed
+
+    private void jBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBvoltarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jBvoltarActionPerformed
+
+    private void jBlimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBlimparActionPerformed
+        // TODO add your handling code here:
+        limparCampos();
+    }//GEN-LAST:event_jBlimparActionPerformed
+
+    private void jBadicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBadicionarActionPerformed
+        // TODO add your handling code here:
+        try {
+            clienteControle.cadastrar(jTnome.getText(), jTcpf.getText(), jTsenha.getText(),
+                    LocalDate.parse(jFormattedData.getText(), formatador));
+            atualizarTabela();
+            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
+
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "A data informada é inválida ou está incompleta.", "Erro na Data", JOptionPane.WARNING_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_jBadicionarActionPerformed
+
+    private void jTableClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableClientesMouseClicked
+        // TODO add your handling code here:
+        int linhaSelecionada = jTableClientes.getSelectedRow();
+
+        if (linhaSelecionada != -1) {
+            Object idSel = jTableClientes.getValueAt(linhaSelecionada, 0);
+            Object bloqSel = jTableClientes.getValueAt(linhaSelecionada, 4);
+            idClienteSelecionado = (idSel != null) ? Integer.valueOf(idSel.toString()) : null;
+            bloqCLienteSelecionado = (bloqSel != null) ? Boolean.valueOf(bloqSel.toString()) : null;
+
+            Object nomeSel = jTableClientes.getValueAt(linhaSelecionada, 1);
+            jTnome.setText(nomeSel != null ? nomeSel.toString() : "");
+
+            Object cpfSel = jTableClientes.getValueAt(linhaSelecionada, 2);
+            jTcpf.setText(cpfSel != null ? cpfSel.toString() : "");
+
+            Object dataSel = jTableClientes.getValueAt(linhaSelecionada, 3);
+            jFormattedData.setText(dataSel != null ? dataSel.toString() : "");
+        } else if (linhaSelecionada == -1) {
+            throw new IllegalStateException("Nenhuma linha foi selecionada");
+        }
+    }//GEN-LAST:event_jTableClientesMouseClicked
+
+    private void jBatualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBatualizarActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (idClienteSelecionado == null || bloqCLienteSelecionado == null) {
+                throw new NullPointerException("O campo Id ou Bloqueado estão nulos");
+            }
+            clienteControle.atualizar(idClienteSelecionado, jTnome.getText(), jTcpf.getText(), jTsenha.getText(), LocalDate.parse(jFormattedData.getText(), formatador), bloqCLienteSelecionado);
+            JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+            atualizarTabela();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
+
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "A data informada é inválida ou está incompleta.", "Erro na Data", JOptionPane.WARNING_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jBatualizarActionPerformed
+
+    private void jBexcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBexcluirActionPerformed
+        // TODO add your handling code here:
+        try{
+            if(idClienteSelecionado == null){
+                throw new IllegalStateException("Selecione um cliente na tabela para excluir");
+            }
+            
+            int opcao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o cliente selecionado?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            
+            if(opcao == JOptionPane.YES_OPTION){
+                Cliente temp = new Cliente();
+                temp.setId(idClienteSelecionado);
+                clienteControle.excluir(temp);
+                
+                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                limparCampos();
+                atualizarTabela();
+            }
+            
+        }catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jBexcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -91,5 +439,21 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBadicionar;
+    private javax.swing.JButton jBatualizar;
+    private javax.swing.JButton jBexcluir;
+    private javax.swing.JButton jBlimpar;
+    private javax.swing.JButton jBvoltar;
+    private javax.swing.JFormattedTextField jFormattedData;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTableClientes;
+    private javax.swing.JTextField jTcpf;
+    private javax.swing.JTextField jTnome;
+    private javax.swing.JTextField jTsenha;
     // End of variables declaration//GEN-END:variables
 }

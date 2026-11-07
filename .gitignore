@@ -24,3 +24,6 @@ hs_err_pid*
 replay_pid*
 
 config.properties
+/build/
+nbproject/private
+/dist/
