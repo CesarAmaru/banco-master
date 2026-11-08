@@ -13,8 +13,9 @@ public class Agencia {
     
     public Agencia(){}
 
-    public Agencia(Integer id, String numero, String cidade, String uf) {
+    public Agencia(Integer id, String nome, String numero, String cidade, String uf) {
         this.id = id;
+        this.nome = nome;
         this.numero = numero;
         this.cidade = cidade;
         this.uf = uf;

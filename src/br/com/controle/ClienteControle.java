@@ -34,17 +34,17 @@ public class ClienteControle {
     }
     
     private void validar(String nome, String cpf, String senha_hash, LocalDate data_nascimento){
-            if(nome == null || nome.trim().isEmpty()){
+            if(nome == null || nome.isBlank()){
                 throw new IllegalArgumentException("Nome é obrigatório.");
             }
-            if(cpf == null || cpf.trim().isEmpty()){
+            if(cpf == null || cpf.isBlank()){
                 throw new IllegalArgumentException("CPF é obrigatório.");
             }
-            if(senha_hash == null || senha_hash.trim().isEmpty()){
+            if(senha_hash == null || senha_hash.isBlank()){
                 throw new IllegalArgumentException("A senha  é obrigatória.");
             }
-            if(data_nascimento == null){
-                throw new IllegalArgumentException("A data de nascimento  é obrigatória.");
+            if(data_nascimento == null || data_nascimento.isAfter(LocalDate.now())){
+                throw new IllegalArgumentException("Adicione uma data de nascimento válida.");
             }
         }
     
