@@ -46,7 +46,7 @@ public class TransacaoDAO {
     // TODO: implementar conforme descrito acima.
     public void registrar(Connection con, Transacao t){
         String sql = "INSERT INTO transacao "
-                + "(tipo, valor, data_hora, conta_origem_id, conta_destino_id"
+                + "(tipo, valor, data_hora, conta_origem_id, conta_destino_id) "
                 + "VALUES (?, ?, ?, ?, ?)";
         
         try(PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
@@ -92,7 +92,7 @@ public class TransacaoDAO {
     
     private List<Transacao> consultar(String numeroConta, LocalDateTime de, LocalDateTime ate){
         StringBuilder sql = new StringBuilder(
-        "SELECT t.id, t.tipo, t.valor, t.data_hora "
+        "SELECT t.id, t.tipo, t.valor, t.data_hora, "
         + "t.conta_origem_id, t.conta_destino_id, "
         + "co.numero AS numero_origem, clo.nome AS nome_origem, "
         + "cd.numero AS numero_destino, cld.nome AS nome_destino "
@@ -101,7 +101,7 @@ public class TransacaoDAO {
         +"LEFT JOIN cliente clo ON clo.id = co.cliente_id "
         +"LEFT JOIN conta cd ON cd.id = t.conta_destino_id "
         +"LEFT JOIN cliente cld ON cld.id = cd.cliente_id "
-        +"WHERE (co.numero = ? OR cd.numero = ?) ");
+        +"WHERE (co.numero = ? OR cd.numero = ?)");
     
     if(de != null){
         sql.append("AND t.data_hora >= ? ");
