@@ -1,0 +1,3 @@
+db.url=jdbc:mysql://localhost:3306/banco_master
+db.use=root
+db.password=caduestrela20

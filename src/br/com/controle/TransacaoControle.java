@@ -4,6 +4,13 @@
  */
 package br.com.controle;
 
+import br.com.entidade.Transacao;
+import br.com.service.TransacaoService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * Ponte entre {@code TelaDeposito}, {@code TelaSaque}, {@code TelaTransferencia}, {@code TelaExtrato} e o {@code TransacaoService}.
  *
@@ -26,4 +33,48 @@ package br.com.controle;
  */
 public class TransacaoControle {
     // TODO: implementar conforme descrito acima.
+    private final TransacaoService service;
+    
+    public TransacaoControle(){
+        this.service = new TransacaoService();
+    }
+    
+    public void depositar(String numeroConta, String valorTexto){
+        service.depositar(numeroConta, converterValor(valorTexto));
+    }
+    
+    public void sacar(String numeroConta, String valorTexto){
+        service.sacar(numeroConta, converterValor(valorTexto));
+    }
+    
+    public void transferir(String numeroOrigem, String numeroDestino, String valorTexto){
+        service.transferir(numeroOrigem, numeroDestino, converterValor(valorTexto));
+    }
+    
+    public List<Transacao> listarExtrato(String numeroConta){
+        return service.listarTransacoes(numeroConta);
+    }
+    
+    public List<Transacao> listarExtrato(String numeroConta, LocalDate inicio, LocalDate fim){
+        return service.listarTransacoes(numeroConta, inicio, fim);
+    }
+    
+    private BigDecimal converterValor(String texto){
+        if(texto == null || texto.isBlank()){
+            throw new IllegalArgumentException("Informe o valor.");
+        }
+        
+        String limpo = texto.replace("R$", "").replace(" ", "").trim();
+        
+        if(limpo.contains(",")){
+            limpo = limpo.replace(".", "").replace(",", ".");
+        }
+        
+        try{
+            return new BigDecimal(limpo).setScale(2, RoundingMode.HALF_UP);
+    
+        }catch(NumberFormatException e){
+                    throw new IllegalArgumentException("Valor inválido: utilize apenas números (ex: 150,00).");
+        }
+    }
 }

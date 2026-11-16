@@ -23,6 +23,9 @@ package br.com.exception;
  *
  * 
  */
-public class SaldoInsuficienteException {
+public class SaldoInsuficienteException extends RuntimeException {
     // TODO: implementar conforme descrito acima.
+    public SaldoInsuficienteException(String mensagem){
+        super(mensagem);
+    }
 }
