@@ -328,7 +328,6 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
             clienteControle.cadastrar(jTnome.getText(), jTcpf.getText(), jTsenha.getText(),
                     LocalDate.parse(jFormattedData.getText(), formatador));
             atualizarTabela();
-            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
@@ -339,6 +338,8 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
         }
+        JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
 
     }//GEN-LAST:event_jBadicionarActionPerformed
 

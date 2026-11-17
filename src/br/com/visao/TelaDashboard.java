@@ -56,6 +56,8 @@ public class TelaDashboard extends JFrame {
         this.controle = new RelatorioControle();
         inicializarComponentes();
         carregarDadosDashboard();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     }
 
     private void inicializarComponentes() {
@@ -136,7 +138,7 @@ public class TelaDashboard extends JFrame {
         lblOperacoes.setFont(new Font("SansSerif", Font.BOLD, 12));
 
         JButton btnAbrirConta = criarBotao("Abrir Conta", new Color(243, 244, 246), Color.DARK_GRAY);
-        btnAbrirConta.addActionListener(e -> new TelaAbrirConta().setVisible(true));
+        btnAbrirConta.addActionListener(e -> new TelaContas().setVisible(true));
 
         JButton btnSaque = criarBotao("Saque", new Color(22, 101, 52), Color.WHITE);
         btnSaque.addActionListener(e -> new TelaSaque().setVisible(true));

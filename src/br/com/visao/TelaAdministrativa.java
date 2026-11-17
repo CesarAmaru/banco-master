@@ -53,6 +53,9 @@ public class TelaAdministrativa extends JFrame {
         setLayout(new BorderLayout());
         add(titulo, BorderLayout.NORTH);
         add(painel, BorderLayout.CENTER);
+        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
     }
 
     public static void main(String[] args) {

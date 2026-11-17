@@ -328,8 +328,17 @@ public class TelaContas extends JFrame {
                 : String.valueOf(conta.getFuncionarioId())
         );
 
-        txtLimite.setText(conta.getLimite().toString());
-        txtTaxa.setText(conta.getTaxaRendimento().toString());
+       txtLimite.setText(
+    conta.getLimite() == null
+        ? "0.00"
+        : conta.getLimite().toString()
+);
+
+txtTaxa.setText(
+    conta.getTaxaRendimento() == null
+        ? "0.0000"
+        : conta.getTaxaRendimento().toString()
+);
 
         cbTipo.setSelectedItem(conta.getTipo().name());
     }
@@ -399,5 +408,11 @@ public class TelaContas extends JFrame {
         txtTaxa.setText("0.0000");
         cbTipo.setSelectedIndex(0);
         tabela.clearSelection();
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            TelaContas tela = new TelaContas();
+            tela.setVisible(true);
+        });
     }
 }
