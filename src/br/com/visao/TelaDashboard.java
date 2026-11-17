@@ -144,6 +144,9 @@ public class TelaDashboard extends JFrame {
         JButton btnExtrato = criarBotao("Extrato da Conta", new Color(243, 244, 246), Color.DARK_GRAY);
         btnExtrato.addActionListener(e -> new TelaExtrato().setVisible(true));
 
+        JButton btnMovimentacoes = criarBotao("Movimentações", new Color(22, 101, 52), Color.WHITE);
+        btnMovimentacoes.addActionListener(e -> new TelaMovimentacoes().setVisible(true));
+
         // Descomente os botões abaixo quando TelaCadastroCliente, TelaDeposito e TelaTransferencia forem adicionadas:
         // JButton btnClientes = criarBotao("Cadastro de Clientes", new Color(243, 244, 246), Color.DARK_GRAY);
         // btnClientes.addActionListener(e -> new TelaCadastroCliente().setVisible(true));
@@ -156,6 +159,7 @@ public class TelaDashboard extends JFrame {
         linhaOperacoes.add(btnAbrirConta);
         linhaOperacoes.add(btnSaque);
         linhaOperacoes.add(btnExtrato);
+        linhaOperacoes.add(btnMovimentacoes);
 
         painelNavegacao.add(linhaCadastros);
         painelNavegacao.add(linhaOperacoes);
