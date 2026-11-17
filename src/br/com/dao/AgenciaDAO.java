@@ -30,7 +30,7 @@ public class AgenciaDAO {
     }
     
     public Agencia buscaPorId(Integer id){
-        String sql = "select id, nome, numero, cidade, uf from agencia"
+        String sql = "select id, nome, numero, cidade, uf from agencia "
                 + "where id = ?";
         Agencia aux = new Agencia();
         try(Connection cn = ConexaoFactory.getConnection();

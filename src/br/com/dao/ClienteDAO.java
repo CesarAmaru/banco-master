@@ -48,7 +48,7 @@ public class ClienteDAO {
             ps.setString(2, c.getCpf());
             ps.setString(3, c.getSenha_hash());
             ps.setObject(4, c.getData_nascimento());
-            ps.setInt(5, 1);
+            ps.setInt(5, 0);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -57,13 +57,14 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorId(Integer id) {
-        String sql = "select nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
+        String sql = "select id, nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
                 + "from cliente where id = ?";
-        Cliente aux = new Cliente();
+        Cliente aux = null;
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery();) {
                 if (rs.next()) {
+                    aux = new Cliente();
                     aux.setId(rs.getInt("id"));
                     aux.setNome(rs.getString("nome"));
                     aux.setCpf(rs.getString("cpf"));
@@ -81,13 +82,14 @@ public class ClienteDAO {
     }
 
     public Cliente buscarPorCPF(String cpf) {
-        String sql = "select nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
+        String sql = "select id, nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
                 + "from cliente where id = ?";
-        Cliente aux = new Cliente();
+        Cliente aux = null;
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
             ps.setString(1, cpf);
             try (ResultSet rs = ps.executeQuery();) {
                 if (rs.next()) {
+                    aux = new Cliente();
                     aux.setId(rs.getInt("id"));
                     aux.setNome(rs.getString("nome"));
                     aux.setCpf(rs.getString("cpf"));
