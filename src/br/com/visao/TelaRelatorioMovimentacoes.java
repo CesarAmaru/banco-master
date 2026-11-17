@@ -272,10 +272,4 @@ public class TelaRelatorioMovimentacoes extends JFrame {
         }
     }
     
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            TelaRelatorioMovimentacoes tela = new TelaRelatorioMovimentacoes();
-            tela.setVisible(true);
-        });
-    }
 }
