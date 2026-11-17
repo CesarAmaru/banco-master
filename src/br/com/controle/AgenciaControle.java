@@ -20,11 +20,17 @@ public class AgenciaControle {
         if(numero == null || numero.isBlank()){
             throw new IllegalArgumentException("Número é obrigatório.");
         }
+        if(numero.length() != 4){
+            throw new IllegalArgumentException("Tamanho de Número incorreto");
+        }
         if(cidade == null || cidade.isBlank()){
             throw new IllegalArgumentException("Cidade é obrigatório.");
         }
         if(uf == null || uf.isBlank()){
             throw new IllegalArgumentException("UF é obrigatório.");
+        }
+        if(uf.length() != 2){
+            throw new IllegalArgumentException("Tamanho de UF incorreto");
         }
     }
     

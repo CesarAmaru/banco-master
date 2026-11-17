@@ -40,6 +40,9 @@ public class ClienteControle {
             if(cpf == null || cpf.isBlank()){
                 throw new IllegalArgumentException("CPF é obrigatório.");
             }
+            if(cpf.length() != 11){
+                throw new IllegalArgumentException("Tamanho de CPF incorreto");
+            }
             if(senha_hash == null || senha_hash.isBlank()){
                 throw new IllegalArgumentException("A senha  é obrigatória.");
             }
