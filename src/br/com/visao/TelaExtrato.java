@@ -1,37 +1,80 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package br.com.visao;
 
+import br.com.controle.MovimentacaoConsultaControle;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
- * Tela de extrato: lista as movimentações de uma conta (inclui o JOIN).
- *
- * <b>Camada:</b> Visão (View)
- * <br><b>Responsável:</b> Integrante 5
- * <p>
- * <b>O que esta classe deve fazer:</b>
- * <ul>
- *   <li>Componentes: seleção da conta, filtro de período (data inicial e final), botão "Filtrar" e uma {@code JTable}.</li>
- *   <li>Chama {@code TransacaoControle.listarExtrato(...)} e preenche o {@code DefaultTableModel} (colunas sugeridas: data/hora, tipo, valor, origem, destino, nome do titular).</li>
- *   <li>Mostra as transações em ordem cronológica.</li>
- * </ul>
- * <b>Atenção:</b>
- * <ul>
- *   <li>NetBeans: arraste os componentes pelo modo Design. NUNCA edite o bloco 'Generated Code'; escreva os eventos (clique dos botões) no código fora dele.</li>
- *   <li>A tela só exibe: a consulta com JOIN fica no {@code TransacaoDAO}.</li>
- * </ul>
- *
- * 
+ * Consulta das movimentações usando INNER JOIN (transacao + conta + cliente).
+ * Mostra: data, tipo da operação, valor, número da conta e nome do cliente.
+ * Responsável: Integrante 5
  */
 public class TelaExtrato extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaExtrato
-     */
+    private static final String TODAS = "Todas as contas";
+    private final MovimentacaoConsultaControle consultaControle = new MovimentacaoConsultaControle();
+    private final SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private final NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
+
     public TelaExtrato() {
         initComponents();
+        setSize(760, 460);
+        // colunas da tabela (o usuário não consegue editar as células)
+        tabela.setModel(new DefaultTableModel(
+                new String[]{"Data/Hora", "Operação", "Valor", "Entrada/Saída", "Conta", "Cliente"}, 0) {
+            @Override
+            public boolean isCellEditable(int linha, int coluna) {
+                return false;
+            }
+        });
+        carregarContas();
+        consultar();
+        setLocationRelativeTo(null); // abre no centro da tela
     }
+
+    /** Primeiro item "Todas as contas", depois as contas do banco. */
+    private void carregarContas() {
+        cbConta.addItem(TODAS);
+        try {
+            for (String conta : consultaControle.listarContas()) {
+                cbConta.addItem(conta);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar contas: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /** Busca as movimentações (consulta com INNER JOIN) e coloca na tabela. */
+    private void consultar() {
+        DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+        modelo.setRowCount(0); // limpa a tabela
+
+        String numero = null; // null = todas as contas
+        if (!TODAS.equals(cbConta.getSelectedItem())) {
+            numero = consultaControle.extrairNumero(cbConta.getSelectedItem());
+        }
+
+        try {
+            for (Object[] linha : consultaControle.listarMovimentacoes(numero)) {
+                modelo.addRow(new Object[]{
+                    formatoData.format(linha[0]),   // data/hora
+                    linha[1],                       // tipo da operação
+                    formatoMoeda.format(linha[2]),  // valor
+                    linha[3],                       // entrada ou saída
+                    linha[4],                       // número da conta
+                    linha[5]                        // nome do cliente
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro na consulta: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,57 +85,52 @@ public class TelaExtrato extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        lblConta = new javax.swing.JLabel();
+        cbConta = new javax.swing.JComboBox<>();
+        btnConsultar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Extrato / Consulta de Movimentações");
+        getContentPane().setLayout(null);
+
+        lblConta.setText("Conta:");
+        getContentPane().add(lblConta);
+        lblConta.setBounds(20, 20, 60, 25);
+
+        getContentPane().add(cbConta);
+        cbConta.setBounds(80, 20, 330, 25);
+
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnConsultar);
+        btnConsultar.setBounds(420, 20, 120, 25);
+
+        jScrollPane1.setViewportView(tabela);
+        getContentPane().add(jScrollPane1);
+        jScrollPane1.setBounds(20, 60, 700, 330);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaExtrato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaExtrato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaExtrato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaExtrato.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        consultar();
+    }//GEN-LAST:event_btnConsultarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaExtrato().setVisible(true);
-            }
-        });
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> new TelaExtrato().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConsultar;
+    private javax.swing.JComboBox<String> cbConta;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblConta;
+    private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

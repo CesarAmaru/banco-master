@@ -1,35 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package br.com.visao;
 
+import br.com.controle.MovimentacaoConsultaControle;
+import br.com.controle.TransacaoControle;
+import javax.swing.JOptionPane;
+
 /**
- * Tela de transferência entre contas.
- *
- * <b>Camada:</b> Visão (View)
- * <br><b>Responsável:</b> Integrante 5
- * <p>
- * <b>O que esta classe deve fazer:</b>
- * <ul>
- *   <li>Componentes: conta de origem, conta de destino, valor e botão "Transferir".</li>
- *   <li>O botão chama {@code TransacaoControle.transferir(origem, destino, valorTexto)}; mostra sucesso ou a mensagem de erro.</li>
- * </ul>
- * <b>Atenção:</b>
- * <ul>
- *   <li>NetBeans: arraste os componentes pelo modo Design. NUNCA edite o bloco 'Generated Code'; escreva os eventos (clique dos botões) no código fora dele.</li>
- * </ul>
- *
- * 
+ * Tela de transferência: escolhe conta de origem, conta de destino e o valor.
+ * Responsável: Integrante 5
  */
 public class TelaTransferencia extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaTransferencia
-     */
+    // Controle do Integrante 4 (faz o depósito/saque/transferência de verdade)
+    private final TransacaoControle transacaoControle = new TransacaoControle();
+    // Meu controle: busca as contas para o combo
+    private final MovimentacaoConsultaControle consultaControle = new MovimentacaoConsultaControle();
+
     public TelaTransferencia() {
         initComponents();
+        setSize(440, 270);
+        carregarContas();
+        setLocationRelativeTo(null); // abre no centro da tela
     }
+
+    /** Preenche o(s) combo(s) com as contas do banco. */
+    private void carregarContas() {
+        try {
+            for (String conta : consultaControle.listarContas()) {
+                cbOrigem.addItem(conta);
+                cbDestino.addItem(conta);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar contas: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,57 +45,75 @@ public class TelaTransferencia extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        lblOrigem = new javax.swing.JLabel();
+        cbOrigem = new javax.swing.JComboBox<>();
+        lblDestino = new javax.swing.JLabel();
+        cbDestino = new javax.swing.JComboBox<>();
+        lblValor = new javax.swing.JLabel();
+        txtValor = new javax.swing.JTextField();
+        btnTransferir = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Transferência");
+        getContentPane().setLayout(null);
+
+        lblOrigem.setText("Conta origem:");
+        getContentPane().add(lblOrigem);
+        lblOrigem.setBounds(20, 30, 100, 25);
+
+        getContentPane().add(cbOrigem);
+        cbOrigem.setBounds(125, 30, 280, 25);
+
+        lblDestino.setText("Conta destino:");
+        getContentPane().add(lblDestino);
+        lblDestino.setBounds(20, 75, 100, 25);
+
+        getContentPane().add(cbDestino);
+        cbDestino.setBounds(125, 75, 280, 25);
+
+        lblValor.setText("Valor (R$):");
+        getContentPane().add(lblValor);
+        lblValor.setBounds(20, 120, 100, 25);
+
+        getContentPane().add(txtValor);
+        txtValor.setBounds(125, 120, 150, 25);
+
+        btnTransferir.setText("Transferir");
+        btnTransferir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransferirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnTransferir);
+        btnTransferir.setBounds(125, 165, 150, 30);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btnTransferirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransferirActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaTransferencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaTransferencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaTransferencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaTransferencia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            String origem = consultaControle.extrairNumero(cbOrigem.getSelectedItem());
+            String destino = consultaControle.extrairNumero(cbDestino.getSelectedItem());
+            transacaoControle.transferir(origem, destino, txtValor.getText());
+            JOptionPane.showMessageDialog(this, "Transferência realizada com sucesso!");
+            txtValor.setText(""); // limpa o campo
+        } catch (Exception e) {
+            // a mensagem de erro (saldo insuficiente, valor inválido...) vem do Integrante 4
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btnTransferirActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaTransferencia().setVisible(true);
-            }
-        });
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> new TelaTransferencia().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTransferir;
+    private javax.swing.JComboBox<String> cbDestino;
+    private javax.swing.JComboBox<String> cbOrigem;
+    private javax.swing.JLabel lblDestino;
+    private javax.swing.JLabel lblOrigem;
+    private javax.swing.JLabel lblValor;
+    private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }

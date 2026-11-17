@@ -1,35 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package br.com.visao;
 
+import br.com.controle.MovimentacaoConsultaControle;
+import br.com.controle.TransacaoControle;
+import javax.swing.JOptionPane;
+
 /**
- * Tela de saque.
- *
- * <b>Camada:</b> Visão (View)
- * <br><b>Responsável:</b> Integrante 5
- * <p>
- * <b>O que esta classe deve fazer:</b>
- * <ul>
- *   <li>Componentes: conta, valor e botão "Sacar".</li>
- *   <li>O botão chama {@code TransacaoControle.sacar(numeroConta, valorTexto)}; mostra sucesso ou a mensagem de erro (ex.: saldo insuficiente).</li>
- * </ul>
- * <b>Atenção:</b>
- * <ul>
- *   <li>NetBeans: arraste os componentes pelo modo Design. NUNCA edite o bloco 'Generated Code'; escreva os eventos (clique dos botões) no código fora dele.</li>
- * </ul>
- *
- * 
+ * Tela de saque: escolhe a conta, digita o valor e clica em Sacar.
+ * Responsável: Integrante 5
  */
 public class TelaSaque extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaSaque
-     */
+    // Controle do Integrante 4 (faz o depósito/saque/transferência de verdade)
+    private final TransacaoControle transacaoControle = new TransacaoControle();
+    // Meu controle: busca as contas para o combo
+    private final MovimentacaoConsultaControle consultaControle = new MovimentacaoConsultaControle();
+
     public TelaSaque() {
         initComponents();
+        setSize(440, 230);
+        carregarContas();
+        setLocationRelativeTo(null); // abre no centro da tela
     }
+
+    /** Preenche o(s) combo(s) com as contas do banco. */
+    private void carregarContas() {
+        try {
+            for (String conta : consultaControle.listarContas()) {
+                cbConta.addItem(conta);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar contas: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,57 +44,63 @@ public class TelaSaque extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        lblConta = new javax.swing.JLabel();
+        cbConta = new javax.swing.JComboBox<>();
+        lblValor = new javax.swing.JLabel();
+        txtValor = new javax.swing.JTextField();
+        btnSacar = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Saque");
+        getContentPane().setLayout(null);
+
+        lblConta.setText("Conta:");
+        getContentPane().add(lblConta);
+        lblConta.setBounds(20, 30, 90, 25);
+
+        getContentPane().add(cbConta);
+        cbConta.setBounds(120, 30, 280, 25);
+
+        lblValor.setText("Valor (R$):");
+        getContentPane().add(lblValor);
+        lblValor.setBounds(20, 75, 90, 25);
+
+        getContentPane().add(txtValor);
+        txtValor.setBounds(120, 75, 150, 25);
+
+        btnSacar.setText("Sacar");
+        btnSacar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSacarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnSacar);
+        btnSacar.setBounds(120, 120, 150, 30);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btnSacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacarActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaSaque.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaSaque.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaSaque.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaSaque.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            String numero = consultaControle.extrairNumero(cbConta.getSelectedItem());
+            transacaoControle.sacar(numero, txtValor.getText());
+            JOptionPane.showMessageDialog(this, "Saque realizado com sucesso!");
+            txtValor.setText(""); // limpa o campo
+        } catch (Exception e) {
+            // a mensagem de erro (saldo insuficiente, valor inválido...) vem do Integrante 4
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btnSacarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaSaque().setVisible(true);
-            }
-        });
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> new TelaSaque().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSacar;
+    private javax.swing.JComboBox<String> cbConta;
+    private javax.swing.JLabel lblConta;
+    private javax.swing.JLabel lblValor;
+    private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }
