@@ -8,7 +8,6 @@ import br.com.entidade.TipoConta;
 import br.com.entidade.StatusConta;
 import br.com.exception.PersistenciaException;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

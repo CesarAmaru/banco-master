@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
 
 /**
  * Formulário de cadastro de novo cliente.
@@ -328,17 +329,19 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
             clienteControle.cadastrar(jTnome.getText(), jTcpf.getText(), jTsenha.getText(),
                     LocalDate.parse(jFormattedData.getText(), formatador));
             atualizarTabela();
-            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
+            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
 
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(this, "A data informada é inválida ou está incompleta.", "Erro na Data", JOptionPane.WARNING_MESSAGE);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
+        } catch(SQLException e){
+            JOptionPane.showMessageDialog(this, "Não foi possivel adicionar o cliente", "Erro em Cliente", JOptionPane.WARNING_MESSAGE);
         }
+
 
     }//GEN-LAST:event_jBadicionarActionPerformed
 
@@ -381,34 +384,36 @@ public class TelaCadastroCliente extends javax.swing.JFrame {
         } catch (DateTimeParseException e) {
             JOptionPane.showMessageDialog(this, "A data informada é inválida ou está incompleta.", "Erro na Data", JOptionPane.WARNING_MESSAGE);
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
+        } catch(SQLException e){
+            JOptionPane.showMessageDialog(this, "Não foi possivel atualizar o cliente", "Erro em Cliente", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jBatualizarActionPerformed
 
     private void jBexcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBexcluirActionPerformed
         // TODO add your handling code here:
-        try{
-            if(idClienteSelecionado == null){
+        try {
+            if (idClienteSelecionado == null) {
                 throw new IllegalStateException("Selecione um cliente na tabela para excluir");
             }
-            
+
             int opcao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o cliente selecionado?", "Confirmação", JOptionPane.YES_NO_OPTION);
-            
-            if(opcao == JOptionPane.YES_OPTION){
+
+            if (opcao == JOptionPane.YES_OPTION) {
                 Cliente temp = new Cliente();
                 temp.setId(idClienteSelecionado);
                 clienteControle.excluir(temp);
-                
-                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 limparCampos();
                 atualizarTabela();
+                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
             }
-            
-        }catch (IllegalArgumentException e) {
+
+        } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Campos Inválidos", JOptionPane.WARNING_MESSAGE);
 
-        } catch (Exception e) {
+        } catch(SQLException e){
+            JOptionPane.showMessageDialog(this, "Não é possível excluir esse registro pois ele já possui registros no banco", "Erro em Cliente", JOptionPane.WARNING_MESSAGE);
+        }catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar no banco: " + e.getMessage(), "Erro no Sistema", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jBexcluirActionPerformed
