@@ -8,6 +8,7 @@ import br.com.dao.ClienteDAO;
 import br.com.entidade.Cliente;
 import java.time.LocalDate;
 import java.util.List;
+import java.sql.SQLException;
 
 /**
  * Ponte entre {@code TelaCadastroCliente} e o cadastro de clientes.
@@ -33,7 +34,7 @@ public class ClienteControle {
         this.clienteDAO = new ClienteDAO();
     }
     
-    private void validar(String nome, String cpf, String senha_hash, LocalDate data_nascimento){
+    private void validar(String nome, String cpf, String senha_hash, LocalDate data_nascimento)throws SQLException{
             if(nome == null || nome.isBlank()){
                 throw new IllegalArgumentException("Nome é obrigatório.");
             }
@@ -51,14 +52,14 @@ public class ClienteControle {
             }
         }
     
-    public void cadastrar(String nome, String cpf, String senha_hash, LocalDate data_nascimento){
+    public void cadastrar(String nome, String cpf, String senha_hash, LocalDate data_nascimento) throws SQLException{
         validar(nome, cpf, senha_hash, data_nascimento);
         
         Cliente aux = new Cliente(null, nome, cpf, senha_hash, data_nascimento, null, null);
         clienteDAO.inserir(aux);
     }
     
-    public void atualizar(Integer id,String nome, String cpf, String senha_hash, LocalDate data_nascimento, Boolean bloqueado){
+    public void atualizar(Integer id,String nome, String cpf, String senha_hash, LocalDate data_nascimento, Boolean bloqueado) throws SQLException{
         if(id == null){
             throw new IllegalArgumentException("Id é obrigatório.");
         }
@@ -71,13 +72,13 @@ public class ClienteControle {
         
     }
     
-    public void excluir(Cliente c){
+    public void excluir(Cliente c)throws SQLException{
         if(c == null || c.getId() == null){
             throw new IllegalArgumentException("Cliente inválido para exclusão");
         }
         clienteDAO.excluir(c);
     }
-    public List<Cliente> listarTodos(){
+    public List<Cliente> listarTodos()throws SQLException{
         return clienteDAO.listar();
     }
     

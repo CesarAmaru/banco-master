@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class ClienteDAO {
 
-    public void inserir(Cliente c) {
+    public void inserir(Cliente c) throws SQLException{
         String sql = "insert into cliente (nome, cpf, senha_hash, data_nascimento, tentativas_login) "
                 + "values (?, ? , ?, ?, ?)";
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
@@ -51,12 +51,10 @@ public class ClienteDAO {
             ps.setInt(5, 0);
             ps.executeUpdate();
 
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
         }
     }
 
-    public Cliente buscarPorId(Integer id) {
+    public Cliente buscarPorId(Integer id) throws SQLException{
         String sql = "select id, nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
                 + "from cliente where id = ?";
         Cliente aux = null;
@@ -75,13 +73,11 @@ public class ClienteDAO {
                 }
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
         }
         return aux;
     }
 
-    public Cliente buscarPorCPF(String cpf) {
+    public Cliente buscarPorCPF(String cpf) throws SQLException{
         String sql = "select id, nome, cpf, senha_hash, data_nascimento, tentativas_login, bloqueado "
                 + "from cliente where id = ?";
         Cliente aux = null;
@@ -100,13 +96,11 @@ public class ClienteDAO {
                 }
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
         }
         return aux;
     }
 
-    public List<Cliente> listar() {
+    public List<Cliente> listar() throws SQLException{
         String sql = "select * from cliente";
         List<Cliente> clienteList = new ArrayList<>();
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareStatement(sql); ResultSet rs = ps.executeQuery();) {
@@ -122,14 +116,12 @@ public class ClienteDAO {
                 clienteList.add(aux);
             }
 
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
-        }
+        } 
 
         return clienteList;
     }
 
-    public void atualizar(Cliente c) {
+    public void atualizar(Cliente c) throws SQLException{
         String sql = "update cliente set nome = ?, senha_hash = ?, bloqueado = ? "
                 + "where id = ?";
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
@@ -138,18 +130,14 @@ public class ClienteDAO {
             ps.setBoolean(3, c.getBloaqueado());
             ps.setInt(4, c.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
-        }
+        } 
     }
 
-    public void excluir(Cliente c) {
+    public void excluir(Cliente c) throws SQLException {
         String sql = "delete from cliente where id = ?";
         try (Connection cn = ConexaoFactory.getConnection(); PreparedStatement ps = cn.prepareCall(sql);) {
             ps.setInt(1, c.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Erro: " + e.getMessage());
-        }
+        } 
     }
 }
